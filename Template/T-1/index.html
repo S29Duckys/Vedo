@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savoie Finition | Gestion Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-light: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --accent: #000000;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-light);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-bg {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                        url('https://images.unsplash.com/photo-1604328698692-f76ea9498e76?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: grayscale(100%);
+        }
+
+        .nav-link {
+            position: relative;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -4px;
+            left: 0;
+            background-color: currentColor;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .section-hidden {
+            display: none;
+        }
+
+        .active-section {
+            display: block;
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .btn-minimal {
+            border: 1px solid #000;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-minimal:hover {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .img-bw {
+            filter: grayscale(100%);
+            transition: filter 0.5s ease;
+            background-color: #f0f0f0;
+        }
+
+        .img-bw:hover {
+            filter: grayscale(0%);
+        }
+
+        .line-accent {
+            width: 40px;
+            height: 1px;
+            background: #000;
+            margin: 1.5rem auto;
+        }
+
+        /* Styles Admin */
+        .admin-tab-btn {
+            border-bottom: 2px solid transparent;
+            padding: 0.5rem 0.5rem;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s;
+        }
+        @media (min-width: 768px) {
+            .admin-tab-btn {
+                padding: 0.5rem 1.5rem;
+                font-size: 0.75rem;
+                letter-spacing: 0.1em;
+            }
+        }
+        .admin-tab-btn.active {
+            border-bottom: 2px solid #000;
+            font-weight: 600;
+        }
+
+        /* Calendrier */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background-color: #e5e7eb;
+            border: 1px solid #e5e7eb;
+        }
+        .calendar-day {
+            background: white;
+            min-height: 100px;
+            padding: 8px;
+            transition: background 0.2s;
+        }
+        .calendar-day:hover {
+            background: #fcfcfc;
+        }
+        .calendar-day.today {
+            background: #f9fafb;
+        }
+        .event-tag {
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            background: #000;
+            color: #fff;
+            border-radius: 2px;
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 4px;
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e5e7eb;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="selection:bg-black selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex flex-col leading-none cursor-pointer" onclick="showSection('home')">
+                    <span class="text-lg md:text-xl font-bold tracking-[0.2em] uppercase">Savoie</span>
+                    <span class="text-[0.55rem] md:text-[0.65rem] tracking-[0.3em] md:tracking-[0.4em] uppercase text-muted mt-1 italic">Finition & Design</span>
+                </div>
+                
+                <div class="hidden md:flex space-x-8 lg:space-x-10 items-center">
+                    <a href="#home" onclick="showSection('home')" class="nav-link font-medium">Propos</a>
+                    <a href="#services" onclick="showSection('services')" class="nav-link font-medium">Expertise</a>
+                    <a href="#projects" onclick="showSection('projects')" class="nav-link font-medium">Galerie</a>
+                    <a href="#contact" onclick="showSection('contact')" class="btn-minimal font-bold">Contact</a>
+                </div>
+
+                <button id="mobile-menu-button" class="md:hidden text-black p-2 focus:outline-none" onclick="toggleMenu()">
+                    <i class="fas fa-bars fa-lg"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden fixed inset-0 z-[60] bg-white flex flex-col items-center justify-center space-y-8 text-xl uppercase tracking-widest transition-all duration-300">
+        <button onclick="toggleMenu()" class="absolute top-8 right-8 p-2"><i class="fas fa-times fa-lg"></i></button>
+        <a href="#home" onclick="showSection('home'); toggleMenu()">Accueil</a>
+        <a href="#services" onclick="showSection('services'); toggleMenu()">Expertise</a>
+        <a href="#projects" onclick="showSection('projects'); toggleMenu()">Galerie</a>
+        <a href="#contact" onclick="showSection('contact'); toggleMenu()">Contact</a>
+        <a href="#login" onclick="showSection('login'); toggleMenu()" class="text-sm text-gray-400 mt-10">Espace Pro</a>
+    </div>
+
+    <!-- Home -->
+    <section id="home" class="section-hidden active-section">
+        <div class="relative h-[90vh] md:h-screen flex items-center justify-center hero-bg">
+            <div class="text-center text-white px-6">
+                <h1 class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-4 md:mb-6 leading-tight">L'épure du geste.</h1>
+                <p class="text-[0.7rem] md:text-base font-light tracking-[0.1em] max-w-lg mx-auto mb-8 md:mb-10 opacity-80 uppercase px-4">
+                    Plaquiste & Peintre de précision. Haute-Savoie.
+                </p>
+                <a href="#contact" onclick="showSection('contact')" class="inline-block border border-white text-white px-8 md:px-10 py-3 md:py-4 text-[0.65rem] md:text-xs tracking-widest uppercase hover:bg-white hover:text-black transition duration-500">
+                    Démarrez un projet
+                </a>
+            </div>
+        </div>
+        <div class="max-w-4xl mx-auto px-6 py-16 md:py-24 text-center">
+            <span class="text-[0.6rem] md:text-[0.7rem] uppercase tracking-[0.3em] text-gray-400">Philosophie</span>
+            <div class="line-accent"></div>
+            <p class="text-base md:text-xl font-light text-gray-700 leading-relaxed italic px-2">
+                "Nous transformons les volumes bruts en espaces de vie raffinés. Chaque jointure, chaque couche de peinture est traitée avec une rigueur artisanale."
+            </p>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="section-hidden pt-28 md:pt-32 pb-16 md:pb-24">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="mb-12 md:mb-20">
+                <h2 class="text-2xl md:text-3xl font-bold uppercase tracking-widest text-center">Savoir-Faire</h2>
+                <div class="line-accent"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
+                <div class="flex flex-col">
+                    <img src="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=2070&auto=format&fit=crop" class="w-full h-64 md:h-96 object-cover img-bw shadow-xl mb-6">
+                    <h3 class="text-xl md:text-2xl font-bold mb-3">Structure & Plaquisterie</h3>
+                    <p class="text-sm text-gray-500">Cloisons sèches, isolation haute performance et intégration de faux-plafonds.</p>
+                </div>
+                <div class="flex flex-col md:mt-24">
+                    <img src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?q=80&w=2031&auto=format&fit=crop" class="w-full h-64 md:h-96 object-cover img-bw shadow-xl mb-6">
+                    <h3 class="text-xl md:text-2xl font-bold mb-3">Peinture & Finitions</h3>
+                    <p class="text-sm text-gray-500">Préparation soignée des supports et application de peintures professionnelles.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section id="projects" class="section-hidden pt-28 md:pt-32 pb-16 md:pb-24 bg-[#fafafa]">
+        <div class="max-w-6xl mx-auto px-6">
+            <h2 class="text-2xl md:text-3xl font-bold uppercase tracking-widest mb-10">Chantiers récents</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="group relative overflow-hidden bg-black aspect-[4/5] sm:aspect-[3/4]">
+                    <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition duration-700 img-bw">
+                </div>
+                <div class="group relative overflow-hidden bg-black aspect-[4/5] sm:aspect-[3/4]">
+                    <img src="https://images.unsplash.com/photo-1600607687940-47a04b699059?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition duration-700 img-bw">
+                </div>
+                <div class="group relative overflow-hidden bg-black aspect-[4/5] sm:aspect-[3/4]">
+                    <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?q=80&w=2074&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition duration-700 img-bw">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="section-hidden pt-28 md:pt-32 pb-16 md:pb-24">
+        <div class="max-w-4xl mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 italic text-center">Un projet ?</h2>
+            <div class="bg-white p-6 md:p-12 border border-gray-100 shadow-sm mt-8">
+                <form onsubmit="handleForm(event)" class="space-y-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="border-b border-gray-200 py-2"><input type="text" placeholder="NOM COMPLET" required class="w-full focus:outline-none text-xs uppercase bg-transparent"></div>
+                        <div class="border-b border-gray-200 py-2"><input type="tel" placeholder="TÉLÉPHONE" required class="w-full focus:outline-none text-xs uppercase bg-transparent"></div>
+                    </div>
+                    <div class="border-b border-gray-200 py-2"><input type="email" placeholder="EMAIL" required class="w-full focus:outline-none text-xs uppercase bg-transparent"></div>
+                    <div class="pt-6"><button type="submit" class="btn-minimal w-full md:w-auto">Envoyer</button></div>
+                </form>
+                <div id="formSuccess" class="hidden text-center py-10"><p class="uppercase text-xs tracking-widest">Message envoyé.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login -->
+    <section id="login" class="section-hidden pt-32 md:pt-40 pb-24">
+        <div class="max-w-md mx-auto px-6">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold uppercase tracking-widest">Espace Pro</h2>
+                <div class="line-accent"></div>
+            </div>
+            <div class="bg-white border border-gray-200 p-6 md:p-8">
+                <div class="space-y-6">
+                    <div>
+                        <label class="text-[0.6rem] uppercase tracking-widest text-gray-400">Identifiant</label>
+                        <input type="text" id="loginUser" class="w-full border-b border-gray-200 py-2 focus:outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="text-[0.6rem] uppercase tracking-widest text-gray-400">Mot de passe</label>
+                        <input type="password" id="loginPass" class="w-full border-b border-gray-200 py-2 focus:outline-none text-sm">
+                    </div>
+                    <div id="loginError" class="hidden text-red-500 text-[0.6rem] uppercase font-bold text-center">Identifiants incorrects.</div>
+                    <button onclick="checkLogin()" class="btn-minimal w-full">Se connecter</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" class="section-hidden pt-28 md:pt-32 pb-24 bg-[#fafafa] min-h-screen">
+        <div class="max-w-6xl mx-auto px-4 md:px-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 space-y-4 md:space-y-0">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-bold uppercase tracking-widest">Gestion Atelier</h2>
+                    <p class="text-[0.6rem] md:text-xs text-gray-400 uppercase mt-1 italic">Bonjour, Administrateur</p>
+                </div>
+                <button onclick="showSection('home')" class="text-[0.6rem] uppercase tracking-widest font-bold hover:underline">Quitter l'espace</button>
+            </div>
+
+            <div class="flex space-x-6 border-b border-gray-200 mb-8 overflow-x-auto custom-scrollbar">
+                <button onclick="switchTab('stats')" id="tab-stats" class="admin-tab-btn active whitespace-nowrap">Vue d'ensemble</button>
+                <button onclick="switchTab('calendar')" id="tab-calendar" class="admin-tab-btn whitespace-nowrap">Calendrier / Agenda</button>
+                <button onclick="switchTab('clients')" id="tab-clients" class="admin-tab-btn whitespace-nowrap">Annuaire Clients</button>
+            </div>
+
+            <!-- Dashboard / Stats -->
+            <div id="content-stats" class="space-y-8">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="bg-white p-8 border border-gray-100 shadow-sm">
+                        <p class="text-[0.6rem] uppercase tracking-widest text-gray-400 mb-2">Chantiers Actifs</p>
+                        <p class="text-4xl font-bold">04</p>
+                    </div>
+                    <div class="bg-white p-8 border border-gray-100 shadow-sm">
+                        <p class="text-[0.6rem] uppercase tracking-widest text-gray-400 mb-2">RDV cette semaine</p>
+                        <p id="totalEvents" class="text-4xl font-bold">0</p>
+                    </div>
+                    <div class="bg-white p-8 border border-gray-100 shadow-sm">
+                        <p class="text-[0.6rem] uppercase tracking-widest text-gray-400 mb-2">Total Clients</p>
+                        <p id="totalClients" class="text-4xl font-bold">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendrier -->
+            <div id="content-calendar" class="hidden animate-fadeIn">
+                <div class="bg-white border border-gray-100 shadow-sm p-4 md:p-6 mb-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 id="currentMonthYear" class="text-lg font-bold uppercase tracking-widest">Mars 2024</h3>
+                        <button onclick="toggleModal('eventModal', true)" class="btn-minimal py-2 px-4 text-[0.65rem]">+ Nouveau RDV</button>
+                    </div>
+                    
+                    <div class="grid grid-cols-7 gap-px text-center mb-1">
+                        <div class="text-[0.6rem] uppercase font-bold py-2 bg-gray-50 border border-gray-100">Lun</div>
+                        <div class="text-[0.6rem] uppercase font-bold py-2 bg-gray-50 border border-gray-100">Mar</div>
+                        <div class="text-[0.6rem] uppercase font-bold py-2 bg-gray-50 border border-gray-100">Mer</div>
+                        <div class="text-[0.6rem] uppercase font-bold py-2 bg-gray-50 border border-gray-100">Jeu</div>
+                        <div class="text-[0.6rem] uppercase font-bold py-2 bg-gray-50 border border-gray-100">Ven</div>
+                        <div class="text-[0.6rem] uppercase font-bold py-2 bg-gray-50 border border-gray-100 text-gray-400">Sam</div>
+                        <div class="text-[0.6rem] uppercase font-bold py-2 bg-gray-50 border border-gray-100 text-gray-400">Dim</div>
+                    </div>
+                    <div id="calendar-body" class="calendar-grid">
+                        <!-- Généré en JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liste Clients -->
+            <div id="content-clients" class="hidden animate-fadeIn">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                    <h3 class="text-xl font-bold italic">Base Clients</h3>
+                    <button onclick="toggleModal('clientModal', true)" class="btn-minimal py-2 px-4 text-[0.65rem]">+ Nouveau Client</button>
+                </div>
+                <div class="bg-white border border-gray-100 shadow-sm overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-sm min-w-[700px]">
+                        <thead>
+                            <tr class="border-b border-black bg-gray-50">
+                                <th class="p-6 font-bold uppercase text-[0.6rem] tracking-widest">Identité</th>
+                                <th class="p-6 font-bold uppercase text-[0.6rem] tracking-widest">Coordonnées</th>
+                                <th class="p-6 font-bold uppercase text-[0.6rem] tracking-widest">Localisation</th>
+                                <th class="p-6 font-bold uppercase text-[0.6rem] tracking-widest text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Client -->
+    <div id="clientModal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white max-w-lg w-full p-8 shadow-2xl">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-xl font-bold uppercase tracking-widest">Fiche Client</h3>
+                <button onclick="toggleModal('clientModal', false)" class="p-2"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="addClient(event)" class="space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="cNom" placeholder="NOM" required class="border-b border-gray-200 py-2 focus:outline-none text-xs w-full uppercase">
+                    <input type="text" id="cPrenom" placeholder="PRÉNOM" required class="border-b border-gray-200 py-2 focus:outline-none text-xs w-full">
+                </div>
+                <input type="email" id="cEmail" placeholder="EMAIL" required class="border-b border-gray-200 py-2 focus:outline-none text-xs w-full">
+                <input type="tel" id="cTel" placeholder="TÉLÉPHONE" required class="border-b border-gray-200 py-2 focus:outline-none text-xs w-full">
+                <input type="text" id="cAdresse" placeholder="VILLE / ADRESSE" required class="border-b border-gray-200 py-2 focus:outline-none text-xs w-full">
+                <button type="submit" class="btn-minimal w-full">Enregistrer</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Evénement / RDV -->
+    <div id="eventModal" class="hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white max-w-lg w-full p-8 shadow-2xl">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-xl font-bold uppercase tracking-widest">Planifier un RDV</h3>
+                <button onclick="toggleModal('eventModal', false)" class="p-2"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="addEvent(event)" class="space-y-6">
+                <div>
+                    <label class="text-[0.6rem] uppercase tracking-widest text-gray-400 block mb-2">Choisir un client existant</label>
+                    <select id="eventClientSelect" required class="w-full border border-gray-200 p-3 text-xs focus:outline-none bg-transparent">
+                        <option value="">-- Sélectionner --</option>
+                        <!-- Options générées dynamiquement -->
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[0.6rem] uppercase tracking-widest text-gray-400 block mb-2">Date</label>
+                        <input type="date" id="eventDate" required class="w-full border border-gray-200 p-2 text-xs">
+                    </div>
+                    <div>
+                        <label class="text-[0.6rem] uppercase tracking-widest text-gray-400 block mb-2">Heure</label>
+                        <input type="time" id="eventTime" required class="w-full border border-gray-200 p-2 text-xs">
+                    </div>
+                </div>
+                <input type="text" id="eventDesc" placeholder="TYPE DE TRAVAUX (ex: Peinture salon)" required class="border-b border-gray-200 py-2 focus:outline-none text-xs w-full">
+                <button type="submit" class="btn-minimal w-full">Ajouter au calendrier</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-16 text-center px-6">
+        <div class="max-w-6xl mx-auto">
+            <span class="text-lg font-bold uppercase tracking-[0.4em]">Savoie Finition</span>
+            <div class="line-accent"></div>
+            <div class="text-[0.6rem] text-gray-400 uppercase tracking-widest mt-4 space-y-4">
+                <p>© 2024 Savoie Finition.</p>
+                <button onclick="showSection('login')" class="hover:text-black transition flex items-center justify-center mx-auto">
+                    <i class="fas fa-lock mr-2"></i> Accès Professionnel
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- DONNEES ---
+        let clients = [
+            { id: 1, nom: "DUPONT", prenom: "Jean", email: "j.dupont@email.com", tel: "06 12 34 56 78", adresse: "Annecy" },
+            { id: 2, nom: "MARTIN", prenom: "Sophie", email: "s.martin@email.com", tel: "06 98 76 54 32", adresse: "Megève" }
+        ];
+
+        let events = [
+            { id: 101, clientId: 1, date: "2024-03-20", time: "09:00", desc: "Plaque plâtre séjour" },
+            { id: 102, clientId: 2, date: "2024-03-22", time: "14:30", desc: "Finition peinture" }
+        ];
+
+        // --- NAVIGATION ---
+        function showSection(sectionId) {
+            document.querySelectorAll('.section-hidden').forEach(s => s.classList.remove('active-section'));
+            const target = document.getElementById(sectionId);
+            if(target) target.classList.add('active-section');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            document.body.style.overflow = menu.classList.contains('hidden') ? 'auto' : 'hidden';
+        }
+
+        function switchTab(tab) {
+            ['stats', 'calendar', 'clients'].forEach(t => {
+                document.getElementById('content-' + t).classList.add('hidden');
+                document.getElementById('tab-' + t).classList.remove('active');
+            });
+            document.getElementById('content-' + tab).classList.remove('hidden');
+            document.getElementById('tab-' + tab).classList.add('active');
+            
+            if(tab === 'calendar') renderCalendar();
+            if(tab === 'clients') renderClients();
+        }
+
+        function toggleModal(id, show) {
+            const m = document.getElementById(id);
+            m.classList.toggle('hidden', !show);
+            if(id === 'eventModal' && show) updateClientSelect();
+        }
+
+        // --- AUTH ---
+        function checkLogin() {
+            const user = document.getElementById('loginUser').value;
+            const pass = document.getElementById('loginPass').value;
+            if (user === 'admin' && pass === '1234') {
+                showSection('dashboard');
+                renderClients();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        // --- GESTION CLIENTS ---
+        function renderClients() {
+            const body = document.getElementById('clientTableBody');
+            const totalC = document.getElementById('totalClients');
+            body.innerHTML = '';
+            
+            clients.forEach(c => {
+                body.innerHTML += `
+                    <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                        <td class="p-6 font-semibold">${c.nom} ${c.prenom}</td>
+                        <td class="p-6 text-xs text-gray-500">${c.email}<br>${c.tel}</td>
+                        <td class="p-6 text-xs text-gray-500">${c.adresse}</td>
+                        <td class="p-6 text-right">
+                            <button onclick="deleteClient(${c.id})" class="text-red-400 hover:text-red-600 text-[0.6rem] uppercase font-bold">Supprimer</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            totalC.innerText = clients.length.toString().padStart(2, '0');
+        }
+
+        function addClient(e) {
+            e.preventDefault();
+            const newC = {
+                id: Date.now(),
+                nom: document.getElementById('cNom').value.toUpperCase(),
+                prenom: document.getElementById('cPrenom').value,
+                email: document.getElementById('cEmail').value,
+                tel: document.getElementById('cTel').value,
+                adresse: document.getElementById('cAdresse').value
+            };
+            clients.push(newC);
+            renderClients();
+            toggleModal('clientModal', false);
+            e.target.reset();
+        }
+
+        function deleteClient(id) {
+            clients = clients.filter(c => c.id !== id);
+            events = events.filter(e => e.clientId !== id); // Nettoyer aussi les RDV
+            renderClients();
+            renderCalendar();
+        }
+
+        // --- GESTION CALENDRIER ---
+        function updateClientSelect() {
+            const select = document.getElementById('eventClientSelect');
+            select.innerHTML = '<option value="">-- Sélectionner --</option>';
+            clients.forEach(c => {
+                select.innerHTML += `<option value="${c.id}">${c.nom} ${c.prenom}</option>`;
+            });
+        }
+
+        function renderCalendar() {
+            const body = document.getElementById('calendar-body');
+            const totalE = document.getElementById('totalEvents');
+            body.innerHTML = '';
+            
+            // On fige sur Mars 2024 pour la démo
+            const daysInMonth = 31;
+            const startOffset = 4; // Mars 2024 commence un vendredi (0=Lun)
+
+            // Espaces vides au début
+            for(let i=0; i<startOffset; i++) {
+                body.innerHTML += `<div class="calendar-day bg-gray-50"></div>`;
+            }
+
+            for(let d=1; d<=daysInMonth; d++) {
+                const dateStr = `2024-03-${d.toString().padStart(2, '0')}`;
+                const dayEvents = events.filter(e => e.date === dateStr);
+                
+                let eventsHtml = '';
+                dayEvents.forEach(ev => {
+                    const client = clients.find(c => c.id == ev.clientId);
+                    const clientName = client ? client.nom : 'Inconnu';
+                    eventsHtml += `<span class="event-tag" title="${ev.time} - ${clientName}">
+                        ${ev.time} | ${clientName}
+                    </span>`;
+                });
+
+                body.innerHTML += `
+                    <div class="calendar-day ${d === 15 ? 'today' : ''}">
+                        <span class="text-[0.6rem] text-gray-400 block mb-1">${d}</span>
+                        <div class="space-y-1">${eventsHtml}</div>
+                    </div>
+                `;
+            }
+            totalE.innerText = events.length.toString().padStart(2, '0');
+        }
+
+        function addEvent(e) {
+            e.preventDefault();
+            const newEv = {
+                id: Date.now(),
+                clientId: parseInt(document.getElementById('eventClientSelect').value),
+                date: document.getElementById('eventDate').value,
+                time: document.getElementById('eventTime').value,
+                desc: document.getElementById('eventDesc').value
+            };
+            events.push(newEv);
+            renderCalendar();
+            toggleModal('eventModal', false);
+            e.target.reset();
+        }
+
+        function handleForm(e) {
+            e.preventDefault();
+            e.target.style.opacity = '0.5';
+            setTimeout(() => {
+                e.target.classList.add('hidden');
+                document.getElementById('formSuccess').classList.remove('hidden');
+            }, 800);
+        }
+
+        window.onload = () => {
+            renderClients();
+            renderCalendar();
+        };
+    </script>
+</body>
+</html>
