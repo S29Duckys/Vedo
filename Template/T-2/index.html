@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plaquiste & Peintre | Finitions d'Exception</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600&family=Tenor+Sans&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcfcfc;
+            color: #0a0a0a;
+        }
+        h1, h2, .font-serif {
+            font-family: 'Tenor Sans', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: #000000;
+        }
+        .page-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+        }
+        .page-content.active {
+            display: block;
+            opacity: 1;
+        }
+        .nav-link.active {
+            font-weight: 600;
+            color: #000000;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 4px;
+        }
+        .reveal {
+            animation: reveal 1.5s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+        }
+        @keyframes reveal {
+            from { clip-path: inset(0 0 100% 0); opacity: 0; transform: translateY(20px); }
+            to { clip-path: inset(0 0 0 0); opacity: 1; transform: translateY(0); }
+        }
+        .grain::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+            z-index: 9999;
+        }
+        /* Style pour les conteneurs d'images réduits */
+        .work-img-container {
+            max-width: 85%;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="antialiased grain">
+
+    <!-- Header avec BG Blur -->
+    <header class="fixed w-full z-50 py-6 transition-all duration-300" id="main-header">
+        <div class="max-w-[1600px] mx-auto px-8 flex justify-between items-center">
+            <button onclick="showPage('home')" class="text-xl tracking-[0.4em] font-serif transition-colors" id="logo">Studio.<span class="font-sans font-light">P</span></button>
+            
+            <nav class="hidden md:flex gap-12 text-[9px] uppercase tracking-[0.3em] font-medium">
+                <button onclick="showPage('home')" class="nav-link hover:text-black transition-colors" id="nav-home">Accueil</button>
+                <button onclick="showPage('work')" class="nav-link hover:text-black transition-colors" id="nav-work">Métiers</button>
+                <button onclick="showPage('contact')" class="nav-link hover:text-black transition-colors" id="nav-contact">Contact</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page: HOME -->
+    <main id="home" class="page-content active">
+        <section class="h-screen flex items-center justify-center relative overflow-hidden bg-zinc-200">
+            <div class="absolute inset-0 z-0">
+                <img src="https://images.unsplash.com/photo-1516880711640-ef7db81be3e1?q=80&w=2000&auto=format&fit=crop" 
+                     class="w-full h-full object-cover grayscale opacity-30" alt="Arrière-plan minimaliste">
+            </div>
+            <div class="relative z-10 text-center space-y-10 px-6 max-w-4xl">
+                <div class="overflow-hidden py-2">
+                    <h1 class="text-2xl md:text-4xl font-light tracking-[0.5em] reveal leading-relaxed">
+                        L'équilibre <br class="md:hidden"> des volumes
+                    </h1>
+                </div>
+                <div class="w-12 h-px bg-zinc-400 mx-auto"></div>
+                <p class="text-[9px] uppercase tracking-[0.7em] font-semibold text-zinc-600">Plaquiste & Peintre</p>
+                <div class="pt-6">
+                    <button onclick="showPage('work')" class="bg-black text-white px-10 py-4 text-[9px] uppercase tracking-[0.4em] hover:bg-zinc-800 transition-all shadow-lg">
+                        Savoir-faire
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Page: WORK (Métiers) -->
+    <main id="work" class="page-content pt-48 pb-24">
+        <div class="max-w-[1200px] mx-auto px-8">
+            <div class="grid lg:grid-cols-2 gap-20 items-start">
+                
+                <!-- Plaquiste (Structure) -->
+                <div class="group space-y-8">
+                    <div class="work-img-container overflow-hidden bg-zinc-100 aspect-[3/4] shadow-xl">
+                        <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1000&auto=format&fit=crop" 
+                             class="w-full h-full object-cover grayscale group-hover:scale-105 transition-transform duration-1000 group-hover:grayscale-0" 
+                             alt="Travaux de plaquiste et structure">
+                    </div>
+                    <div class="text-center space-y-4">
+                        <h2 class="text-2xl font-serif">Structure.</h2>
+                        <p class="text-[10px] text-zinc-500 font-medium uppercase tracking-widest leading-relaxed">Plaques de plâtre • Cloisons • Isolation</p>
+                    </div>
+                </div>
+
+                <!-- Peintre (Lumière) -->
+                <div class="group space-y-8 lg:mt-32">
+                    <div class="work-img-container overflow-hidden bg-zinc-100 aspect-[3/4] shadow-xl">
+                        <img src="https://images.unsplash.com/photo-1595428707305-bfbd11bb9b64?q=80&w=1000&auto=format&fit=crop" 
+                             class="w-full h-full object-cover grayscale group-hover:scale-105 transition-transform duration-1000 group-hover:grayscale-0" 
+                             alt="Peinture et finitions murales">
+                    </div>
+                    <div class="text-center space-y-4">
+                        <h2 class="text-2xl font-serif">Lumière.</h2>
+                        <p class="text-[10px] text-zinc-500 font-medium uppercase tracking-widest leading-relaxed">Peintures • Enduits • Finitions</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Page: CONTACT -->
+    <main id="contact" class="page-content pt-48 pb-24">
+        <div class="max-w-[700px] mx-auto px-8">
+            <div class="space-y-20">
+                <div class="space-y-6 text-center">
+                    <h2 class="text-4xl font-serif">Un projet ?</h2>
+                    <p class="text-zinc-500 text-[10px] uppercase tracking-widest font-semibold">Paris — Île-de-France</p>
+                </div>
+
+                <form onsubmit="handleForm(event)" id="contactForm" class="grid gap-12">
+                    <input type="text" placeholder="NOM" class="w-full bg-transparent border-b border-zinc-200 py-4 focus:outline-none focus:border-black transition-colors placeholder:text-zinc-300 text-[10px] tracking-[0.3em] font-bold" required>
+                    <input type="email" placeholder="EMAIL" class="w-full bg-transparent border-b border-zinc-200 py-4 focus:outline-none focus:border-black transition-colors placeholder:text-zinc-300 text-[10px] tracking-[0.3em] font-bold" required>
+                    <textarea rows="2" placeholder="MESSAGE" class="w-full bg-transparent border-b border-zinc-200 py-4 focus:outline-none focus:border-black transition-colors placeholder:text-zinc-300 text-[10px] tracking-[0.3em] font-bold" required></textarea>
+                    
+                    <button type="submit" class="bg-black text-white py-5 text-[10px] uppercase tracking-[0.5em] font-bold hover:bg-zinc-800 transition-all shadow-lg">
+                        Envoyer
+                    </button>
+                </form>
+
+                <div id="success" class="hidden py-16 text-center space-y-6 animate-in fade-in">
+                    <i data-lucide="check" class="w-8 h-8 mx-auto text-black"></i>
+                    <p class="font-serif text-2xl tracking-widest">Reçu.</p>
+                </div>
+
+                <div class="pt-16 border-t border-zinc-100 flex flex-col md:flex-row gap-16 text-[9px] uppercase tracking-[0.3em] font-bold">
+                    <div class="space-y-2">
+                        <span class="text-zinc-400">Contact</span>
+                        <p class="text-black">06 12 34 56 78</p>
+                    </div>
+                    <div class="space-y-2">
+                        <span class="text-zinc-400">Mail</span>
+                        <p class="text-black">studio.p@btp.fr</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="fixed bottom-10 left-10 z-40 hidden lg:block">
+        <p class="text-[8px] uppercase tracking-[0.5em] text-zinc-400 rotate-90 origin-left font-bold">© 2024 Studio P</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        const header = document.getElementById('main-header');
+        
+        function showPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const link = document.getElementById('nav-' + pageId);
+            if(link) link.classList.add('active');
+
+            if(pageId === 'home') {
+                header.classList.remove('bg-white/70', 'backdrop-blur-md', 'border-b', 'border-zinc-200');
+            } else {
+                header.classList.add('bg-white/70', 'backdrop-blur-md', 'border-b', 'border-zinc-200');
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function handleForm(e) {
+            e.preventDefault();
+            document.getElementById('contactForm').classList.add('hidden');
+            document.getElementById('success').classList.remove('hidden');
+        }
+
+        window.addEventListener('scroll', () => {
+            const activePage = document.querySelector('.page-content.active').id;
+            if(activePage === 'home') {
+                if (window.scrollY > 50) {
+                    header.classList.add('bg-white/70', 'backdrop-blur-md', 'border-b', 'border-zinc-100');
+                } else {
+                    header.classList.remove('bg-white/70', 'backdrop-blur-md', 'border-b', 'border-zinc-100');
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => showPage('home'));
+    </script>
+</body>
+</html>
